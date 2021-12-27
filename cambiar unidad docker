@@ -1,0 +1,29 @@
+
+Cuando instalé docker por primera vez en windows 10, me llamó mucho la atención que no ofreciera la posibilidad de elegir un directorio al igual que el resto de programas donde alojar sus ficheros pero lo dejé pasar y empecé a trabajar con el como con el resto de los programas. Con el tiempo, empecé a observar que mi disco duro principal se quedaba sin espacio, lo que suponía un problema para mi equipo y no tenía muy claro que era lo que estaba pasando, hasta que caí en la cuenta que todas las imagenes y contenedores que me estaba descargando iban a parar a mi disco duro principal!!
+Quizás muchos de vosotros no hayáis tenido este problema porque disponéis de espacio suficiente en vuestro disco duro, pero en mi caso el sistema operativo, un windows 10, está instalado en un SSD de sólo 128 gb. Así que la solución pasaba por conseguir que docker dejara de ocupar espacio en mi disco principal y reubicarlo en otro de los disponibles.
+Investigando por internet he encontrado varias soluciones pero ninguna me daba resultado, al final he dado con la tecla y me parece interesante poder compartirlo por si alguien se encuentra en mi misma situación.
+
+
+1º - Parar el servicio de docker, bastará con hacer click derecho en el icono de la bandeja del sistema y seleccionar la opción habilitada para ello. Para comprobar que el servicio está detenido ejecutaremos en el terminal
+
+wsl -l -v
+
+Y veremos los dos procesos de docker detenidos:
+
+2º - Elegir un directorio donde queramos almacenar la información sin comprometer el espacio del sistema operativo, en mi caso "e:\dockerdata\wsl\data"
+
+3º - Crearemos un fichero tar con la información de docker-desktop-data con el comando
+
+wsl --export docker-desktop-data "e:\dockerdata\docker-desktop-data.tar"
+
+4º - Una vez creado el fichero tar, eliminaremos del registro de wsl la entrada de docker-desktop-data
+
+wsl --unregister docker-desktop-data
+
+5º - Volveremos a registrarlo pero esta vez haciendo referencia a la nueva ubicación
+
+wsl --import docker-desktop-data "e:\dockerdata\wsl\data" "e:\dockerdata\docker-desktop-data.tar" --version 2
+
+6º - Comprobaremos que en el directorio se nos ha creado un fichero llamado ext4, en dicha unidad se almacenarán las nuevas imagenes con las que vayamos a trabajar.
+
+7º - Reiniciamos el servicio y listo, si no tenéis ningún problema se puede borrar el fichero tar.
